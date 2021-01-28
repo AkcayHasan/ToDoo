@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">ToDoo</string>
+    <!--
+    <string-array name="categories">
+        <item>Please choose a category</item>
+        <item>General</item>
+        <item>Art</item>
+        <item>Science</item>
+        <item>Software</item>
+        <item>Sport</item>
+        <item>Food</item>
+    </string-array>
+    -->
+    <string-array name="priorities">
+
+        <item>Please choose a priority</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+
+    </string-array>
+
+</resources>
