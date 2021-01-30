@@ -21,7 +21,7 @@ class NoteDetailActivity : AppCompatActivity() {
     private lateinit var editText_header: EditText
     private lateinit var tv_date: TextView
     private lateinit var editText_note: EditText
-    private var currentCategoriesList: RealmList<String>? = null
+    private var currentCategoriesList: RealmList<String> = RealmList()
     var currentPriority: String? = null
     private var selectedItem: Note? = null
     private var currentId: Int? = null
@@ -50,7 +50,7 @@ class NoteDetailActivity : AppCompatActivity() {
             editText_note.setText(selectedItem?.note)
             tv_note_detail_name.text = selectedItem?.header
             var tempMassage = ""
-            selectedItem?.categoriesList?.forEach { tempMassage += it }
+            selectedItem?.categoriesList?.forEach { tempMassage += "$it " }
             tv_categories.text = tempMassage
             priorityArray.forEach {
                 if (selectedItem?.priorityId.equals(it)) {
@@ -147,22 +147,22 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private fun saveCategories() {
         if (cb_general.isChecked) {
-            currentCategoriesList?.add(cb_general.text.toString())
+            currentCategoriesList.add(cb_general.text.toString())
         }
         if (cb_art.isChecked) {
-            currentCategoriesList?.add(cb_art.text.toString())
+            currentCategoriesList.add(cb_art.text.toString())
         }
         if (cb_science.isChecked) {
-            currentCategoriesList?.add(cb_science.text.toString())
+            currentCategoriesList.add(cb_science.text.toString())
         }
         if (cb_software.isChecked) {
-            currentCategoriesList?.add(cb_software.text.toString())
+            currentCategoriesList.add(cb_software.text.toString())
         }
         if (cb_sport.isChecked) {
-            currentCategoriesList?.add(cb_sport.text.toString())
+            currentCategoriesList.add(cb_sport.text.toString())
         }
         if (cb_food.isChecked) {
-            currentCategoriesList?.add(cb_food.text.toString())
+            currentCategoriesList.add(cb_food.text.toString())
         }
     }
 
