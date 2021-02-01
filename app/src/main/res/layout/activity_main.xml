@@ -9,7 +9,7 @@
         android:id="@+id/rl_add_note"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/purple_700"
+        android:background="@color/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -57,7 +57,7 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/green"
         android:onClick="addNote"
         android:src="@drawable/ic_baseline_add"
         android:layout_marginEnd="33dp"

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <RelativeLayout
             android:id="@+id/rl_add_note"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/purple_700">
+            android:background="@color/green">
 
             <ImageView
                 android:id="@+id/backButton"
@@ -17,7 +17,7 @@
                 android:layout_height="40dp"
                 android:onClick="backButton"
                 android:src="@drawable/ic_baseline_arrow_back"
-                app:tint="@color/white"
+                app:tint="@color/black"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp" />
@@ -27,7 +27,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_baseline_edit"
-                app:tint="@color/white"
+                app:tint="@color/black"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Note"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textSize="20sp" />
@@ -73,10 +73,12 @@
             android:background="@color/purple_700"
             android:layout_below="@+id/text_header"/>
         <EditText
-            android:id="@+id/edittext_header"
+            android:id="@+id/et_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_header"
+            android:maxLength="20"
+            android:inputType="text"
             android:layout_margin="7dp"
             android:padding="3dp"
             android:background="@drawable/et_style" />
@@ -89,7 +91,7 @@
             android:textStyle="bold"
             android:textSize="20sp"
             android:textColor="@color/black"
-            android:layout_below="@+id/edittext_header"
+            android:layout_below="@+id/et_header"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
             />
@@ -107,7 +109,7 @@
             android:textColor="@color/black"
             android:layout_margin="7dp"
             android:background="@drawable/et_style"
-            android:padding="5dp"/>
+            android:padding="5dp" />
 
         <TextView
             android:id="@+id/text_note"
@@ -127,13 +129,13 @@
             android:background="@color/purple_700"
             android:layout_below="@+id/text_note"/>
         <EditText
-            android:id="@+id/edittext_note"
+            android:id="@+id/et_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_note"
             android:layout_margin="7dp"
             android:padding="3dp"
-            android:background="@drawable/et_style"/>
+            android:background="@drawable/et_style" />
 
         <TextView
             android:id="@+id/text_category"
@@ -143,7 +145,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:layout_below="@+id/edittext_note"
+            android:layout_below="@+id/et_note"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
             />
@@ -160,7 +162,7 @@
             android:padding="5dp"
             android:textColor="@color/black"
             android:background="@drawable/et_style"
-            android:layout_below="@id/text_category"/>
+            android:layout_below="@id/text_category" />
         <GridLayout
             android:visibility="gone"
             android:id="@+id/gl_categories"
@@ -258,13 +260,14 @@
         android:layout_margin="7dp"
         android:background="@drawable/et_style"
         android:padding="3dp"
-        android:layout_below="@id/text_priority"/>
+        android:layout_below="@id/text_priority" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:background="@drawable/button_corners"
         android:onClick="saveButton"
         android:layout_below="@id/spinner_priorities"
@@ -277,7 +280,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="delete"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:onClick="deleteButton"
         android:layout_alignParentRight="true"
         android:layout_marginRight="70dp"
@@ -285,7 +288,7 @@
         android:layout_below="@id/spinner_priorities"
         android:layout_marginTop="20dp" />
 
-</RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
 
-    </RelativeLayout>
+</RelativeLayout>

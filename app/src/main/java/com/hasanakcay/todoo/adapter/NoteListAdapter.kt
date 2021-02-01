@@ -34,9 +34,9 @@ class NoteListAdapter(val noteList: MutableList<Note>, contxt: Context) :
             if (noteList.get(position).priorityId.equals("1")) {
                 view_color.setBackgroundColor(Color.RED)
             } else if (noteList.get(position).priorityId.equals("2")) {
-                view_color.setBackgroundColor(Color.BLUE)
+                view_color.setBackgroundColor(Color.rgb(255, 165, 0))
             } else {
-                view_color.setBackgroundColor(Color.GREEN)
+                view_color.setBackgroundColor(Color.YELLOW)
             }
         }
         holder.itemView.setOnClickListener {

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hasanakcay.todoo">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
         android:name=".util.MyTodooApp"
         android:allowBackup="true"
