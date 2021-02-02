@@ -232,7 +232,6 @@
                 android:layout_column="1"
                 android:text="Food" />
 
-
         </GridLayout>
 
     <TextView
@@ -262,33 +261,43 @@
         android:padding="3dp"
         android:layout_below="@id/text_priority" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonSave"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_below="@+id/spinner_priorities"
+        android:id="@+id/buttonLay"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="25dp"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:textColor="@color/black"
-        android:background="@drawable/button_corners"
-        android:onClick="saveButton"
-        android:layout_below="@id/spinner_priorities"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="20dp" />
+        android:weightSum="2"
+        android:padding="20dp"
+        android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:background="@drawable/button_corners"
+        android:onClick="saveButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_marginLeft="24dp"
+        android:layout_weight="1"
         android:id="@+id/buttonDelete"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="delete"
         android:textColor="@color/black"
         android:onClick="deleteButton"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="70dp"
-        android:background="@drawable/button_corners"
-        android:layout_below="@id/spinner_priorities"
-        android:layout_marginTop="20dp" />
+        android:background="@drawable/button_corners" />
+
+    </LinearLayout>
 
         </RelativeLayout>
+
     </ScrollView>
 
 </RelativeLayout>

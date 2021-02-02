@@ -53,27 +53,35 @@ class NoteDetailActivity : AppCompatActivity() {
         } else {
             buttonDelete.visibility = View.GONE
             buttonSave.visibility = View.GONE
-            et_header.isClickable = false
-            et_header.isCursorVisible = false
-            et_header.isFocusable = false
-            et_header.isFocusableInTouchMode = false
-            et_note.isClickable = false
-            et_note.isCursorVisible = false
-            et_note.isFocusable = false
-            et_note.isFocusableInTouchMode = false
+            et_header.apply {
+                isClickable = false
+                isCursorVisible = false
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
+            et_note.apply {
+                isClickable = false
+                isCursorVisible = false
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
             tv_date.isEnabled =false
             tv_categories.isEnabled = false
             spinner_priorities.isEnabled = false
 
             editIcon.setOnClickListener {
-                et_header.isClickable = true
-                et_header.isCursorVisible = true
-                et_header.isFocusable = true
-                et_header.isFocusableInTouchMode = true
-                et_note.isClickable = true
-                et_note.isCursorVisible = true
-                et_note.isFocusable = true
-                et_note.isFocusableInTouchMode = true
+                et_header.apply {
+                    isClickable = true
+                    isCursorVisible = true
+                    isFocusable = true
+                    isFocusableInTouchMode = true
+                }
+                et_note.apply {
+                    isClickable = true
+                    isCursorVisible = true
+                    isFocusable = true
+                    isFocusableInTouchMode = true
+                }
                 tv_date.isEnabled =true
                 tv_categories.isEnabled = true
                 spinner_priorities.isEnabled = true
@@ -85,9 +93,9 @@ class NoteDetailActivity : AppCompatActivity() {
             tv_date.text = selectedItem?.date
             et_note.setText(selectedItem?.note)
             tv_note_detail_name.text = selectedItem?.header
-
             selectedItem?.categoriesList?.forEach {
                 tempMassage += "$it "
+                currentCategoriesList.add(it)
             }
             tv_categories.text = tempMassage
             priorityArray.forEach {
@@ -222,7 +230,9 @@ class NoteDetailActivity : AppCompatActivity() {
 
     fun saveButton(view: View) {
 
-        saveCategories()
+        if(selectedItem?.id == null){
+            saveCategories()
+        }
 
         if (et_header.text.isNotEmpty() && tv_date.text.isNotEmpty() && et_note.text.isNotEmpty() && tv_categories.text.isNotEmpty() && !currentPriority.equals("Please choose a priority")) {
             val note = Note(getId(), et_header.text.toString(), tv_date.text.toString(), et_note.text.toString(), currentCategoriesList, currentPriority, "task")
