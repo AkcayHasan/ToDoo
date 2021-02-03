@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hasanakcay.todoo.R
 import com.hasanakcay.todoo.adapter.NoteListAdapter
-import com.hasanakcay.todoo.model.Weather
+import com.hasanakcay.todoo.model.OpenWeatherModel
+import com.hasanakcay.todoo.model.WeatherModel
 import com.hasanakcay.todoo.service.WeatherAPI
 import com.hasanakcay.todoo.util.RealmHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,8 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var noteRecyclerView: RecyclerView
     private var compositeDisposable : CompositeDisposable ?= null
-    private val BASE_URL = "api.openweathermap.org/data/2.5"
-    private val weatherData : Weather ?= null
+    private val BASE_URL = "https://api.openweathermap.org/"
+    private val weatherModelData : OpenWeatherModel ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity() {
             noteRecyclerView.layoutManager = LinearLayoutManager(this)
             noteRecyclerView.adapter = NoteListAdapter(RealmHelper().getAllNote(this), this)
         }
+
+
+        callAllWeatherData()
     }
 
     fun addNote(view: View) {
@@ -62,10 +66,14 @@ class MainActivity : AppCompatActivity() {
             .subscribe(this::handleResponse))
     }
 
-    private fun handleResponse(weatherData : Weather){
-        weatherData.let {
-            tv_description.text = it.description
-            tv_temprature.text = it.temp.toString()
+    private fun handleResponse(weatherModelData : OpenWeatherModel){
+        weatherModelData.let {
+            tv_description.text = it.weather.get(0).description
+
+            // TODO: 2/3/21    convert temp into celcius  
+            // TODO: 2/3/21  downloand icons on website and asign them according to icon code in condition
+            
+            
         }
     }
 
