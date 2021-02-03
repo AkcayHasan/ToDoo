@@ -12,6 +12,7 @@ import com.hasanakcay.todoo.model.OpenWeatherModel
 import com.hasanakcay.todoo.model.WeatherModel
 import com.hasanakcay.todoo.service.WeatherAPI
 import com.hasanakcay.todoo.util.RealmHelper
+import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,14 +26,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var noteRecyclerView: RecyclerView
     private var compositeDisposable : CompositeDisposable ?= null
     private val BASE_URL = "https://api.openweathermap.org/"
-    private val weatherModelData : OpenWeatherModel ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         noteRecyclerView = findViewById(R.id.rv_note_list)
-        compositeDisposable = CompositeDisposable()
+        //compositeDisposable = CompositeDisposable()
 
         if (RealmHelper().getAllNote(this).size == 0) {
             empty_list_tv.visibility = View.VISIBLE
@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             noteRecyclerView.layoutManager = LinearLayoutManager(this)
             noteRecyclerView.adapter = NoteListAdapter(RealmHelper().getAllNote(this), this)
         }
-
 
         callAllWeatherData()
     }
@@ -69,11 +68,12 @@ class MainActivity : AppCompatActivity() {
     private fun handleResponse(weatherModelData : OpenWeatherModel){
         weatherModelData.let {
             tv_description.text = it.weather.get(0).description
+            tv_temprature.text = it.main.temp.toString()
 
-            // TODO: 2/3/21    convert temp into celcius  
-            // TODO: 2/3/21  downloand icons on website and asign them according to icon code in condition
-            
-            
+            val icon = it.weather.get(0).icon
+            val iconURL = "http://openweathermap.org/img/w/$icon.png"
+            Picasso.get().load(iconURL).into(imageView)
+
         }
     }
 

@@ -7,9 +7,9 @@ import retrofit2.http.GET
 
 interface WeatherAPI {
 
-    //api.openweathermap.org/data/2.5/weather?q=Istanbul&appid=1217b60ef51690a245a8c2dcbfd0c959
+    //api.openweathermap.org/data/2.5/weather?q=Istanbul&appid=1217b60ef51690a245a8c2dcbfd0c959&units=metric
 
-    @GET("data/2.5/weather?q=Istanbul&appid=1217b60ef51690a245a8c2dcbfd0c959")
+    @GET("data/2.5/weather?q=Istanbul&appid=1217b60ef51690a245a8c2dcbfd0c959&units=metric")
     fun getWeatherData() : Observable<OpenWeatherModel>
 
 }
