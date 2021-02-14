@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         noteRecyclerView = findViewById(R.id.rv_note_list)
-        //compositeDisposable = CompositeDisposable()
+        compositeDisposable = CompositeDisposable()
 
         if (RealmHelper().getAllNote(this).size == 0) {
             empty_list_tv.visibility = View.VISIBLE
@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             noteRecyclerView.layoutManager = LinearLayoutManager(this)
             noteRecyclerView.adapter = NoteListAdapter(RealmHelper().getAllNote(this), this)
         }
-
         callAllWeatherData()
     }
 
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             tv_temprature.text = it.main.temp.toString()
 
             val icon = it.weather.get(0).icon
-            val iconURL = "http://openweathermap.org/img/w/$icon.png"
+            val iconURL = "https://openweathermap.org/img/w/$icon.png"
             Picasso.get().load(iconURL).into(imageView)
 
         }
