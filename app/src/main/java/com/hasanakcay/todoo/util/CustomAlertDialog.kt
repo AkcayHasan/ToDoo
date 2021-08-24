@@ -1,13 +1,12 @@
 package com.hasanakcay.todoo.util
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.widget.*
 import com.hasanakcay.todoo.R
 
-class AlertDialogg() {
+class CustomAlertDialog() {
     fun createAlertBox(context: Context, header: EditText, date: TextView, note: EditText, category: TextView, priority: String) {
         val alert = AlertDialog.Builder(context)
 /*

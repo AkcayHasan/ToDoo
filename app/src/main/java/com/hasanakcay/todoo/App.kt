@@ -1,4 +1,4 @@
-package com.hasanakcay.todoo.util
+package com.hasanakcay.todoo
 
 import android.app.Application
 import android.content.Context
@@ -6,7 +6,11 @@ import androidx.multidex.MultiDex
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
-class MyTodooApp : Application() {
+class App : Application() {
+
+    companion object{
+
+    }
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)

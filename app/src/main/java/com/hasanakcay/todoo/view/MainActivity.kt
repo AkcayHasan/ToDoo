@@ -1,57 +1,66 @@
 package com.hasanakcay.todoo.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hasanakcay.todoo.R
 import com.hasanakcay.todoo.adapter.NoteListAdapter
+import com.hasanakcay.todoo.base.BaseActivity
+import com.hasanakcay.todoo.databinding.ActivityMainBinding
 import com.hasanakcay.todoo.model.OpenWeatherModel
-import com.hasanakcay.todoo.model.WeatherModel
 import com.hasanakcay.todoo.service.WeatherAPI
 import com.hasanakcay.todoo.util.RealmHelper
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    private lateinit var noteRecyclerView: RecyclerView
     private var compositeDisposable : CompositeDisposable ?= null
-    private val BASE_URL = "https://api.openweathermap.org/"
+    companion object{
+        const val BASE_URL = "https://api.openweathermap.org/"
+    }
+
+    override fun getViewBinding(): ActivityMainBinding {
+        return ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        noteRecyclerView = findViewById(R.id.rv_note_list)
+        actions()
+
         compositeDisposable = CompositeDisposable()
 
         if (RealmHelper().getAllNote(this).size == 0) {
-            empty_list_tv.visibility = View.VISIBLE
-            noteRecyclerView.visibility = View.GONE
+            binding.emptyListTv.visibility = View.VISIBLE
+            binding.rvNoteList.visibility = View.GONE
         } else {
-            empty_list_tv.visibility = View.GONE
-            noteRecyclerView.visibility = View.VISIBLE
-            noteRecyclerView.layoutManager = LinearLayoutManager(this)
-            noteRecyclerView.adapter = NoteListAdapter(RealmHelper().getAllNote(this), this)
+            binding.emptyListTv.visibility = View.GONE
+            binding.rvNoteList.apply {
+                visibility = View.VISIBLE
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                adapter = NoteListAdapter(RealmHelper().getAllNote(this@MainActivity), this@MainActivity)
+            }
         }
         callAllWeatherData()
     }
 
-    fun addNote(view: View) {
-        val intent = Intent(this, NoteDetailActivity::class.java)
-        startActivity(intent)
+    private fun actions(){
+        binding.floatingActionButton.setOnClickListener {
+            val intent = Intent(this, NoteDetailActivity::class.java)
+            startActivity(intent)
+        }
     }
 
-    fun callAllWeatherData(){
+    private fun callAllWeatherData(){
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -66,12 +75,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleResponse(weatherModelData : OpenWeatherModel){
         weatherModelData.let {
-            tv_description.text = it.weather.get(0).description
-            tv_temprature.text = it.main.temp.toString()
+            binding.tvDescription.text = it.weather[0].description
+            binding.tvTemprature.text = it.main.temp.toString()
 
-            val icon = it.weather.get(0).icon
+            val icon = it.weather[0].icon
             val iconURL = "https://openweathermap.org/img/w/$icon.png"
-            Picasso.get().load(iconURL).into(imageView)
+            Picasso.get().load(iconURL).into(binding.imageView)
 
         }
     }
@@ -80,5 +89,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         compositeDisposable?.clear()
     }
+
+
 
 }
