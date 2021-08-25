@@ -60,7 +60,7 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
                 isFocusable = false
                 isFocusableInTouchMode = false
             }
-            binding.tvDate.isEnabled =false
+            binding.tvDate.isEnabled = false
             binding.tvCategories.isEnabled = false
             binding.spinnerPriorities.isEnabled = false
 
@@ -77,7 +77,7 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
                     isFocusable = true
                     isFocusableInTouchMode = true
                 }
-                binding.tvDate.isEnabled =true
+                binding.tvDate.isEnabled = true
                 binding.tvCategories.isEnabled = true
                 binding.spinnerPriorities.isEnabled = true
                 binding.buttonDelete.visibility = View.VISIBLE
@@ -106,13 +106,20 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
             SlideAnim().slideUp(binding.glCategories, this)
         }
 
-        binding.spinnerPriorities.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                currentPriority = parent?.getItemAtPosition(position) as String
+        binding.spinnerPriorities.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    currentPriority = parent?.getItemAtPosition(position) as String
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
         pickDate()
 
         binding.cbGeneral.setOnCheckedChangeListener { _, _ ->
@@ -137,8 +144,9 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
 
     private fun hideKeyboard() {
         val view = this.currentFocus
-        if (view != null){
-            val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (view != null) {
+            val inputMethodManager =
+                getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
 
@@ -153,13 +161,20 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         binding.tvDate.setOnClickListener {
-            val dialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(Calendar.YEAR,mYear)
-                selectedDate.set(Calendar.MONTH,mMonth)
-                selectedDate.set(Calendar.DAY_OF_MONTH,mDay)
-                val date = formatter.format(selectedDate.time)
-                binding.tvDate.text = date }, year, month, day)
+            val dialog = DatePickerDialog(
+                this,
+                { _, mYear, mMonth, mDay ->
+                    val selectedDate = Calendar.getInstance()
+                    selectedDate.set(Calendar.YEAR, mYear)
+                    selectedDate.set(Calendar.MONTH, mMonth)
+                    selectedDate.set(Calendar.DAY_OF_MONTH, mDay)
+                    val date = formatter.format(selectedDate.time)
+                    binding.tvDate.text = date
+                },
+                year,
+                month,
+                day
+            )
             dialog.datePicker.minDate = calendar.timeInMillis
             dialog.show()
         }
@@ -171,10 +186,10 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         }
         val currentIdNum = RealmHelper().getId(this)
         var nextId = 0
-        if (currentIdNum == null) {
-            nextId = 1
+        nextId = if (currentIdNum == null) {
+            1
         } else {
-            nextId = currentIdNum.toInt() + 1
+            currentIdNum.toInt() + 1
         }
         return nextId
     }
@@ -225,17 +240,39 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
 
     fun saveButton(view: View) {
 
-        if(selectedItem?.id == null){
+        if (selectedItem?.id == null) {
             saveCategories()
         }
 
-        if (binding.etHeader.text.isNotEmpty() && binding.tvDate.text.isNotEmpty() && binding.etNote.text.isNotEmpty() && binding.tvCategories.text.isNotEmpty() && !currentPriority.equals("Please choose a priority")) {
-            val note = Note(getId(), binding.etHeader.text.toString(), binding.tvDate.text.toString(), binding.etNote.text.toString(), currentCategoriesList, currentPriority, "task")
+        if (binding.etHeader.text.isNotEmpty() &&
+            binding.tvDate.text.isNotEmpty() &&
+            binding.etNote.text.isNotEmpty() &&
+            binding.tvCategories.text.isNotEmpty() &&
+            !currentPriority.equals(
+                "Please choose a priority"
+            )
+        ) {
+            val note = Note(
+                getId(),
+                binding.etHeader.text.toString(),
+                binding.tvDate.text.toString(),
+                binding.etNote.text.toString(),
+                currentCategoriesList,
+                currentPriority,
+                "task"
+            )
             RealmHelper().saveNote(this, note)
             startActivity(Intent(this, MainActivity::class.java))
-        } else{
+        } else {
             com.hasanakcay.todoo.util.CustomAlertDialog()
-                .createAlertBox(this,binding.etHeader,binding.tvDate,binding.etNote,binding.tvCategories,currentPriority!!)
+                .createAlertBox(
+                    this,
+                    binding.etHeader,
+                    binding.tvDate,
+                    binding.etNote,
+                    binding.tvCategories,
+                    currentPriority!!
+                )
         }
     }
 
@@ -254,6 +291,7 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         }
         alert.show()
     }
+
     fun backButton(view: View) {
         onBackPressed()
     }

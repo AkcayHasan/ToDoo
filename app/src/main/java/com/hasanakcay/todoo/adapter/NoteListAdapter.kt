@@ -1,52 +1,47 @@
 package com.hasanakcay.todoo.adapter
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hasanakcay.todoo.R
+import com.hasanakcay.todoo.databinding.ItemNoteBinding
 import com.hasanakcay.todoo.model.Note
-import com.hasanakcay.todoo.view.NoteDetailActivity
-import kotlinx.android.synthetic.main.note_recycler_row.view.*
+import com.hasanakcay.todoo.util.CustomClickListener
 
-class NoteListAdapter(val noteList: MutableList<Note>, contxt: Context) :
+class NoteListAdapter(
+    private val noteList: MutableList<Note>,
+    private val customClickListener: CustomClickListener
+) :
     RecyclerView.Adapter<NoteListAdapter.NoteListViewHolder>() {
 
-    val context = contxt
+    class NoteListViewHolder(private val itemBinding: ItemNoteBinding) :
+        RecyclerView.ViewHolder(itemBinding.root) {
+        fun bind(note: Note) {
+            itemBinding.recyclerHeader.text = note.header
+            itemBinding.recyclerDate.text = note.date
 
-    inner class NoteListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+            when (note.priorityId) {
+                "1" -> { itemBinding.viewColor.setBackgroundColor(Color.RED) }
+                "2" -> { itemBinding.viewColor.setBackgroundColor(Color.rgb(255, 165, 0)) }
+                else -> itemBinding.viewColor.setBackgroundColor(Color.YELLOW)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListViewHolder {
         return NoteListViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.note_recycler_row, parent, false)
+            ItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: NoteListViewHolder, position: Int) {
-        holder.itemView.apply {
-            recycler_header.text = noteList.get(position).header
-            recycler_date.text = noteList.get(position).date
+        val noteInstance: Note = noteList[position]
+        holder.bind(noteInstance)
 
-            if (noteList.get(position).priorityId.equals("1")) {
-                view_color.setBackgroundColor(Color.RED)
-            } else if (noteList.get(position).priorityId.equals("2")) {
-                view_color.setBackgroundColor(Color.rgb(255, 165, 0))
-            } else {
-                view_color.setBackgroundColor(Color.YELLOW)
-            }
-        }
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, NoteDetailActivity::class.java)
-            intent.putExtra("selectedNote", noteList.get(position).id)
-            (context as Activity).startActivity(intent)
+            customClickListener.onClick(noteList[position].id)
         }
     }
 
-    override fun getItemCount(): Int {
-        return noteList.size
-    }
+    override fun getItemCount() = noteList.size
 }

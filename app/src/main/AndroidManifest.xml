@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoo">
         <activity android:name=".view.NoteDetailActivity" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

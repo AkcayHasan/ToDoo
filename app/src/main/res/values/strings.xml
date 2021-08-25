@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">ToDoo</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_delete">Delete</string>
+    <string name="tv_priority">Priority</string>
+    <string name="tv_empty_note">Note List is empty. Please add a note!</string>
 
     <string-array name="categories">
         <item>General</item>

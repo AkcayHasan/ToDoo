@@ -10,5 +10,5 @@ interface TodooCrud {
     fun saveNote(context: Context, note: Note)
     fun deleteNote(context: Context, id: Int)
     fun findNote(context: Context, id: Int): Note?
-    fun getId(context: Context) : Number?
+    fun getId(context: Context): Number?
 }
