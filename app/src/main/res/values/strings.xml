@@ -3,6 +3,7 @@
     <string name="btn_save">Save</string>
     <string name="btn_delete">Delete</string>
     <string name="tv_priority">Priority</string>
+    <string name="title_add_note">Add Note</string>
     <string name="tv_empty_note">Note List is empty. Please add a note!</string>
 
     <string-array name="categories">
@@ -20,5 +21,7 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

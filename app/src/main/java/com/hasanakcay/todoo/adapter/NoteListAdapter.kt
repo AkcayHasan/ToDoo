@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hasanakcay.todoo.databinding.ItemNoteBinding
-import com.hasanakcay.todoo.model.Note
-import com.hasanakcay.todoo.util.CustomClickListener
+import com.hasanakcay.todoo.data.db.Note
+import com.hasanakcay.todoo.util.AdapterClickListener
 
 class NoteListAdapter(
     private val noteList: MutableList<Note>,
-    private val customClickListener: CustomClickListener
+    private val adapterClickListener: AdapterClickListener
 ) :
     RecyclerView.Adapter<NoteListAdapter.NoteListViewHolder>() {
 
@@ -39,7 +39,7 @@ class NoteListAdapter(
         holder.bind(noteInstance)
 
         holder.itemView.setOnClickListener {
-            customClickListener.onClick(noteList[position].id)
+            adapterClickListener.onClick(noteList[position].id)
         }
     }
 

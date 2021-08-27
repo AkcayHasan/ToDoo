@@ -1,4 +1,4 @@
-package com.hasanakcay.todoo.view
+package com.hasanakcay.todoo.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,44 +6,69 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.NavArgs
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.hasanakcay.todoo.R
-import com.hasanakcay.todoo.base.BaseActivity
-import com.hasanakcay.todoo.databinding.ActivityNoteDetailBinding
-import com.hasanakcay.todoo.model.Note
-import com.hasanakcay.todoo.util.RealmHelper
+import com.hasanakcay.todoo.data.RealmDbHelper
+import com.hasanakcay.todoo.data.db.Note
+import com.hasanakcay.todoo.databinding.FragmentNoteDetailBinding
+import com.hasanakcay.todoo.ui.base.BaseFragment
+import com.hasanakcay.todoo.util.ActivityButtonListener
+import com.hasanakcay.todoo.util.CustomAlertDialog
+import com.hasanakcay.todoo.util.FragmentListener
 import com.hasanakcay.todoo.util.SlideAnim
+import io.realm.Realm
 import io.realm.RealmList
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
+class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityButtonListener {
 
     private var currentCategoriesList: RealmList<String> = RealmList()
     var currentPriority: String? = null
     private var selectedItem: Note? = null
     private var currentId: Int? = null
     var tempMassage = ""
+    lateinit var realm: Realm
+    lateinit var navController: NavController
+    lateinit var fragmentListener: FragmentListener
 
-    override fun getViewBinding(): ActivityNoteDetailBinding {
-        return ActivityNoteDetailBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentNoteDetailBinding {
+        return FragmentNoteDetailBinding.inflate(layoutInflater)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_note_detail)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).setOnActivityButtonListener(this)
+
+        fragmentListener = activity as FragmentListener
+        fragmentListener.whichFragment(R.id.noteDetailFragment)
+
+        Realm.init(binding.root.context)
+        realm = Realm.getDefaultInstance()
+
+        navController = findNavController()
+
+        actions()
         val priorityArray = resources.getStringArray(R.array.priorities)
 
-        currentId = intent.getIntExtra("selectedNote", 0)
+        val args : NoteDetailFragmentArgs by navArgs()
+        currentId = args.selectedNote
         currentId?.let {
-            selectedItem = RealmHelper().findNote(this, it)
+            selectedItem = RealmDbHelper().findNote(realm, it)
         }
 
+
         if (selectedItem?.id == null) {
-            binding.editIcon.visibility = View.GONE
             binding.buttonDelete.visibility = View.GONE
         } else {
             binding.buttonDelete.visibility = View.GONE
@@ -64,30 +89,9 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
             binding.tvCategories.isEnabled = false
             binding.spinnerPriorities.isEnabled = false
 
-            binding.editIcon.setOnClickListener {
-                binding.etHeader.apply {
-                    isClickable = true
-                    isCursorVisible = true
-                    isFocusable = true
-                    isFocusableInTouchMode = true
-                }
-                binding.etNote.apply {
-                    isClickable = true
-                    isCursorVisible = true
-                    isFocusable = true
-                    isFocusableInTouchMode = true
-                }
-                binding.tvDate.isEnabled = true
-                binding.tvCategories.isEnabled = true
-                binding.spinnerPriorities.isEnabled = true
-                binding.buttonDelete.visibility = View.VISIBLE
-                binding.buttonSave.visibility = View.VISIBLE
-            }
-
             binding.etHeader.setText(selectedItem?.header)
             binding.tvDate.text = selectedItem?.date
             binding.etNote.setText(selectedItem?.note)
-            binding.tvNoteDetailName.text = selectedItem?.header
             selectedItem?.categoriesList?.forEach {
                 tempMassage += "$it "
                 currentCategoriesList.add(it)
@@ -103,7 +107,7 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         binding.tvCategories.setOnClickListener {
             hideKeyboard()
             binding.glCategories.visibility = View.VISIBLE
-            SlideAnim().slideUp(binding.glCategories, this)
+            SlideAnim().slideUp(binding.glCategories, binding.root.context)
         }
 
         binding.spinnerPriorities.onItemSelectedListener =
@@ -142,14 +146,40 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         }
     }
 
-    private fun hideKeyboard() {
-        val view = this.currentFocus
-        if (view != null) {
-            val inputMethodManager =
-                getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    override fun clickEditIcon(isClicked : Boolean) {
+        if (isClicked){
+            binding.etHeader.apply {
+                isClickable = true
+                isCursorVisible = true
+                isFocusable = true
+                isFocusableInTouchMode = true
+            }
+            binding.etNote.apply {
+                isClickable = true
+                isCursorVisible = true
+                isFocusable = true
+                isFocusableInTouchMode = true
+            }
+            binding.tvDate.isEnabled = true
+            binding.tvCategories.isEnabled = true
+            binding.spinnerPriorities.isEnabled = true
+            binding.buttonDelete.visibility = View.VISIBLE
+            binding.buttonSave.visibility = View.VISIBLE
         }
+    }
 
+    override fun clickBackIcon(isClicked: Boolean) {
+        if (isClicked){
+            if (!navController.popBackStack()){
+                //finish
+            }
+        }
+    }
+
+
+    private fun hideKeyboard() {
+        activity?.window?.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
@@ -162,7 +192,7 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
 
         binding.tvDate.setOnClickListener {
             val dialog = DatePickerDialog(
-                this,
+                binding.root.context,
                 { _, mYear, mMonth, mDay ->
                     val selectedDate = Calendar.getInstance()
                     selectedDate.set(Calendar.YEAR, mYear)
@@ -180,13 +210,12 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         }
     }
 
-    private fun getId(): Int {
+    private fun getIdNum(): Int {
         if (currentId != 0) {
             return currentId!!
         }
-        val currentIdNum = RealmHelper().getId(this)
-        var nextId = 0
-        nextId = if (currentIdNum == null) {
+        val currentIdNum = RealmDbHelper().getId(realm)
+        val nextId: Int = if (currentIdNum == null) {
             1
         } else {
             currentIdNum.toInt() + 1
@@ -238,63 +267,65 @@ class NoteDetailActivity : BaseActivity<ActivityNoteDetailBinding>() {
         }
     }
 
-    fun saveButton(view: View) {
+    private fun actions(){
+        binding.buttonSave.setOnClickListener {
+            if (selectedItem?.id == null) {
+                saveCategories()
+            }
 
-        if (selectedItem?.id == null) {
-            saveCategories()
-        }
-
-        if (binding.etHeader.text.isNotEmpty() &&
-            binding.tvDate.text.isNotEmpty() &&
-            binding.etNote.text.isNotEmpty() &&
-            binding.tvCategories.text.isNotEmpty() &&
-            !currentPriority.equals(
-                "Please choose a priority"
-            )
-        ) {
-            val note = Note(
-                getId(),
-                binding.etHeader.text.toString(),
-                binding.tvDate.text.toString(),
-                binding.etNote.text.toString(),
-                currentCategoriesList,
-                currentPriority,
-                "task"
-            )
-            RealmHelper().saveNote(this, note)
-            startActivity(Intent(this, MainActivity::class.java))
-        } else {
-            com.hasanakcay.todoo.util.CustomAlertDialog()
-                .createAlertBox(
-                    this,
+            if (binding.etHeader.text.isNotEmpty() &&
+                binding.tvDate.text.isNotEmpty() &&
+                binding.etNote.text.isNotEmpty() &&
+                binding.tvCategories.text.isNotEmpty() &&
+                !currentPriority.equals(
+                    "Please choose a priority"
+                )
+            ) {
+                val note = Note(
+                    getIdNum(),
+                    currentCategoriesList,
+                    binding.etHeader.text.toString(),
+                    binding.tvDate.text.toString(),
+                    binding.etNote.text.toString(),
+                    currentPriority,
+                    "task"
+                )
+                RealmDbHelper().saveNote(realm, note)
+                startActivity(Intent(binding.root.context, MainActivity::class.java))
+            } else {
+                CustomAlertDialog.createAlertBox(
+                    binding.root.context,
                     binding.etHeader,
                     binding.tvDate,
                     binding.etNote,
                     binding.tvCategories,
                     currentPriority!!
                 )
+            }
+        }
+
+        binding.buttonDelete.setOnClickListener {
+            val alert = AlertDialog.Builder(binding.root.context)
+            alert.setTitle("Are You Sure?")
+            alert.setIcon(R.drawable.ic_baseline_warning)
+            alert.setMessage("Do you want to delete this note?")
+            alert.setPositiveButton("YES") { _, _ ->
+                Toast.makeText(binding.root.context, "Deleted!", Toast.LENGTH_SHORT).show()
+                currentId?.let { RealmDbHelper().deleteNote(realm, it) }
+                startActivity(Intent(binding.root.context, MainActivity::class.java))
+            }
+            alert.setNegativeButton("NO") { _, _ ->
+                Toast.makeText(binding.root.context, "Not Deleted!", Toast.LENGTH_SHORT).show()
+            }
+            alert.show()
         }
     }
 
-    fun deleteButton(view: View) {
-        val alert = AlertDialog.Builder(this)
-        alert.setTitle("Are You Sure?")
-        alert.setIcon(R.drawable.ic_baseline_warning)
-        alert.setMessage("Do you want to delete this note?")
-        alert.setPositiveButton("YES") { _, _ ->
-            Toast.makeText(this, "Deleted!", Toast.LENGTH_SHORT).show()
-            currentId?.let { RealmHelper().deleteNote(this, it) }
-            startActivity(Intent(this, MainActivity::class.java))
-        }
-        alert.setNegativeButton("NO") { _, _ ->
-            Toast.makeText(this, "Not Deleted!", Toast.LENGTH_SHORT).show()
-        }
-        alert.show()
+    override fun onStop() {
+        super.onStop()
+        realm.close()
     }
 
-    fun backButton(view: View) {
-        onBackPressed()
-    }
 
 
 }

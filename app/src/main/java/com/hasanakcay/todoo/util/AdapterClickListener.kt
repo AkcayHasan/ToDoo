@@ -1,5 +1,5 @@
 package com.hasanakcay.todoo.util
 
-interface CustomClickListener {
+interface AdapterClickListener {
     fun onClick(id : Int?)
 }
