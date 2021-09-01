@@ -24,5 +24,8 @@
             android:name="selectedNote"
             app:argType="integer"
             android:defaultValue="0" />
+        <action
+            android:id="@+id/noteDetailFragment_to_notesFragment"
+            app:destination="@id/notesFragment" />
     </fragment>
 </navigation>

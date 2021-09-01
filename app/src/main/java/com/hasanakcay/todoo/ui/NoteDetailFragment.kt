@@ -40,6 +40,14 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
     lateinit var realm: Realm
     lateinit var navController: NavController
     lateinit var fragmentListener: FragmentListener
+    private val checkboxGroup = mutableListOf(
+        binding.cbArt,
+        binding.cbFood,
+        binding.cbGeneral,
+        binding.cbScience,
+        binding.cbSoftware,
+        binding.cbSport
+    )
 
     override fun getViewBinding(): FragmentNoteDetailBinding {
         return FragmentNoteDetailBinding.inflate(layoutInflater)
@@ -53,6 +61,8 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
         fragmentListener = activity as FragmentListener
         fragmentListener.whichFragment(R.id.noteDetailFragment)
 
+
+
         Realm.init(binding.root.context)
         realm = Realm.getDefaultInstance()
 
@@ -61,7 +71,7 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
         actions()
         val priorityArray = resources.getStringArray(R.array.priorities)
 
-        val args : NoteDetailFragmentArgs by navArgs()
+        val args: NoteDetailFragmentArgs by navArgs()
         currentId = args.selectedNote
         currentId?.let {
             selectedItem = RealmDbHelper().findNote(realm, it)
@@ -121,33 +131,19 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
                     currentPriority = parent?.getItemAtPosition(position) as String
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         pickDate()
 
-        binding.cbGeneral.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
-        }
-        binding.cbArt.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
-        }
-        binding.cbFood.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
-        }
-        binding.cbScience.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
-        }
-        binding.cbSoftware.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
-        }
-        binding.cbSport.setOnCheckedChangeListener { _, _ ->
-            updateCategoriesTextView()
+        for (checkbox in checkboxGroup) {
+            checkbox.setOnCheckedChangeListener { _, _ ->
+                updateCategoriesTextView()
+            }
         }
     }
 
-    override fun clickEditIcon(isClicked : Boolean) {
-        if (isClicked){
+    override fun clickEditIcon(isClicked: Boolean) {
+        if (isClicked) {
             binding.etHeader.apply {
                 isClickable = true
                 isCursorVisible = true
@@ -169,8 +165,8 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
     }
 
     override fun clickBackIcon(isClicked: Boolean) {
-        if (isClicked){
-            if (!navController.popBackStack()){
+        if (isClicked) {
+            if (!navController.popBackStack()) {
                 //finish
             }
         }
@@ -179,7 +175,8 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
 
     private fun hideKeyboard() {
         activity?.window?.setSoftInputMode(
-            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        )
     }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
@@ -225,49 +222,23 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
 
     private fun updateCategoriesTextView() {
         var categoriesTextView = ""
-        if (binding.cbGeneral.isChecked) {
-            categoriesTextView += "${binding.cbGeneral.text} "
-        }
-        if (binding.cbArt.isChecked) {
-            categoriesTextView += "${binding.cbArt.text} "
-        }
-        if (binding.cbScience.isChecked) {
-            categoriesTextView += "${binding.cbScience.text} "
-        }
-        if (binding.cbSoftware.isChecked) {
-            categoriesTextView += "${binding.cbSoftware.text} "
-        }
-        if (binding.cbSport.isChecked) {
-            categoriesTextView += "${binding.cbSport.text} "
-        }
-        if (binding.cbFood.isChecked) {
-            categoriesTextView += "${binding.cbFood.text} "
+        for (checkbox in checkboxGroup){
+            if (checkbox.isChecked){
+                categoriesTextView += "${checkbox.text}"
+            }
         }
         binding.tvCategories.text = categoriesTextView
     }
 
     private fun saveCategories() {
-        if (binding.cbGeneral.isChecked) {
-            currentCategoriesList.add(binding.cbGeneral.text.toString())
-        }
-        if (binding.cbArt.isChecked) {
-            currentCategoriesList.add(binding.cbArt.text.toString())
-        }
-        if (binding.cbScience.isChecked) {
-            currentCategoriesList.add(binding.cbScience.text.toString())
-        }
-        if (binding.cbSoftware.isChecked) {
-            currentCategoriesList.add(binding.cbSoftware.text.toString())
-        }
-        if (binding.cbSport.isChecked) {
-            currentCategoriesList.add(binding.cbSport.text.toString())
-        }
-        if (binding.cbFood.isChecked) {
-            currentCategoriesList.add(binding.cbFood.text.toString())
+        for (checkbox in checkboxGroup){
+            if (checkbox.isChecked){
+                currentCategoriesList.add(checkbox.text.toString())
+            }
         }
     }
 
-    private fun actions(){
+    private fun actions() {
         binding.buttonSave.setOnClickListener {
             if (selectedItem?.id == null) {
                 saveCategories()
@@ -291,7 +262,8 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
                     "task"
                 )
                 RealmDbHelper().saveNote(realm, note)
-                startActivity(Intent(binding.root.context, MainActivity::class.java))
+                val action = NoteDetailFragmentDirections.noteDetailFragmentToNotesFragment()
+                navController.navigate(action)
             } else {
                 CustomAlertDialog.createAlertBox(
                     binding.root.context,
@@ -312,7 +284,8 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
             alert.setPositiveButton("YES") { _, _ ->
                 Toast.makeText(binding.root.context, "Deleted!", Toast.LENGTH_SHORT).show()
                 currentId?.let { RealmDbHelper().deleteNote(realm, it) }
-                startActivity(Intent(binding.root.context, MainActivity::class.java))
+                val action = NoteDetailFragmentDirections.noteDetailFragmentToNotesFragment()
+                navController.navigate(action)
             }
             alert.setNegativeButton("NO") { _, _ ->
                 Toast.makeText(binding.root.context, "Not Deleted!", Toast.LENGTH_SHORT).show()
@@ -325,7 +298,6 @@ class NoteDetailFragment : BaseFragment<FragmentNoteDetailBinding>(), ActivityBu
         super.onStop()
         realm.close()
     }
-
 
 
 }

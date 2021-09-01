@@ -58,7 +58,7 @@ class NotesFragment : BaseFragment<FragmentNotesBinding>(), AdapterClickListener
         }
     }
 
-    override fun onClick(id: Int?) {
+    override fun onNoteClick(id: Int?) {
         id?.let {
             val action = NotesFragmentDirections.notesFragmentToNoteDetailFragment(it)
             binding.root.findNavController().navigate(action)
